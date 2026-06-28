@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Social Media Automation</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<body class="bg-slate-100 min-h-screen">
+
+<div class="max-w-7xl mx-auto p-8">
+
+    <div class="bg-white rounded-3xl shadow-2xl p-10">
+
+        <div class="text-center">
+
+            <h1 class="text-5xl font-bold text-blue-700">
+
+                🚀 AI Social Media Automation
+
+            </h1>
+
+            <p class="mt-5 text-gray-600 text-lg">
+
+                Generate articles, captions and hashtags using AI.
+
+            </p>
+
+        </div>
+
+        <!-- Selection Cards -->
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+
+            <div id="textCard"
+
+                 onclick="toggleCard('text')"
+
+                 class="cursor-pointer rounded-2xl border-2 border-gray-300 p-8 hover:border-blue-600 transition">
+
+                <div class="text-6xl">
+
+                    📝
+
+                </div>
+
+                <h2 class="text-2xl font-bold mt-5">
+
+                    Text Prompt
+
+                </h2>
+
+                <p class="text-gray-500 mt-3">
+
+                    Generate AI content from a topic.
+
+                </p>
+
+            </div>
+
+
+
+            <div id="imageCard"
+
+                 onclick="toggleCard('image')"
+
+                 class="cursor-pointer rounded-2xl border-2 border-gray-300 p-8 hover:border-blue-600 transition">
+
+                <div class="text-6xl">
+
+                    🖼️
+
+                </div>
+
+                <h2 class="text-2xl font-bold mt-5">
+
+                    Image Upload
+
+                </h2>
+
+                <p class="text-gray-500 mt-3">
+
+                    Upload an image for AI analysis.
+
+                </p>
+
+            </div>
+
+
+
+            <div id="videoCard"
+
+                 onclick="toggleCard('video')"
+
+                 class="cursor-pointer rounded-2xl border-2 border-gray-300 p-8 hover:border-blue-600 transition">
+
+                <div class="text-6xl">
+
+                    🎥
+
+                </div>
+
+                <h2 class="text-2xl font-bold mt-5">
+
+                    Video Upload
+
+                </h2>
+
+                <p class="text-gray-500 mt-3">
+
+                    Upload a video for AI analysis.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Dynamic Form -->
+
+        <form id="contentForm"
+
+              method="POST"
+
+              enctype="multipart/form-data"
+
+              class="mt-12">
+
+            {% csrf_token %}
+
+            <div id="dynamicFields">
+
+            </div>
+
+            <div class="text-center mt-10">
+
+                <button
+
+                    type="button"
+
+                    onclick="continueProcess()"
+
+                    class="bg-blue-700 hover:bg-blue-800 text-white px-12 py-4 rounded-xl text-xl">
+                    🚀 Generate Content
+
+
+                </button>
+
+            </div>
+
+        </form>
+        
+{% if generated %}
+
+<div class="mt-16 border-t pt-10">
+
+    <h2 class="text-4xl font-bold text-center text-blue-700 mb-10">
+        AI Generated Content
+    </h2>
+
+    <!-- Article -->
+    <div class="bg-white shadow-lg rounded-2xl p-6 mb-8 border">
+
+        <h3 class="text-2xl font-bold text-blue-600 mb-4">
+            📄 Article
+        </h3>
+
+        <pre class="whitespace-pre-wrap text-gray-700">{{ article }}</pre>
+
+    </div>
+
+    <!-- Caption -->
+    <div class="bg-white shadow-lg rounded-2xl p-6 mb-8 border">
+
+        <h3 class="text-2xl font-bold text-green-600 mb-4">
+            ✨ Caption
+        </h3>
+
+        <pre class="whitespace-pre-wrap text-gray-700">{{ caption }}</pre>
+
+    </div>
+
+    <!-- Hashtags -->
+    <div class="bg-white shadow-lg rounded-2xl p-6 mb-8 border">
+
+        <h3 class="text-2xl font-bold text-purple-600 mb-4">
+            #️⃣ Suggested Hashtags
+        </h3>
+
+        <pre class="whitespace-pre-wrap text-gray-700">{{ hashtags }}</pre>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+
+    </div>
+
+</div>
+
+<script src="{% static 'script.js' %}"></script>
+
+{% if popup_message %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    Swal.fire({
+        icon: "{{ popup_icon }}",
+        title: "{{ popup_title }}",
+        html: `{{ popup_message|safe }}`,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2563eb",
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    });
+
+});
+</script>
+
+{% endif %}
+
+</body>
+
+</html>
+

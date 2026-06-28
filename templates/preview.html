@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100">
+
+<div class="max-w-7xl mx-auto p-8">
+
+    <div class="bg-white rounded-3xl shadow-2xl p-10">
+
+        <h1 class="text-5xl font-bold text-center text-blue-700 mb-10">
+            🚀 AI Content Preview
+        </h1>
+
+        {% if image_url %}
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">
+                Uploaded Image
+            </h2>
+
+            <img
+                src="{{ image_url }}"
+                class="rounded-xl shadow-lg border max-w-xl">
+        </div>
+        {% endif %}
+
+        {% if video_url %}
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">
+                Uploaded Video
+            </h2>
+
+            <video
+               controls
+               class="rounded-xl shadow-lg border max-w-xl">
+               <source src="{{ video_url }}" type="video/mp4">
+               Your browser does not support the video tag.
+            </video>
+        <div>
+        {% endif %}
+
+        <!-- ARTICLE -->
+
+        <div class="bg-gray-50 rounded-xl shadow p-6 mb-8">
+
+            <h2 class="text-2xl font-bold text-blue-700 mb-4">
+                📄 Article
+            </h2>
+
+            <pre class="whitespace-pre-wrap">{{ article }}</pre>
+
+        </div>
+
+        <!-- CAPTION -->
+
+        <div class="bg-gray-50 rounded-xl shadow p-6 mb-8">
+
+            <h2 class="text-2xl font-bold text-green-700 mb-4">
+                ✨ Caption
+            </h2>
+
+            <pre class="whitespace-pre-wrap">{{ caption }}</pre>
+
+        </div>
+
+        <!-- HASHTAGS -->
+
+        <div class="bg-gray-50 rounded-xl shadow p-6 mb-10">
+
+            <h2 class="text-2xl font-bold text-purple-700 mb-4">
+                #️⃣ Suggested Hashtags
+            </h2>
+
+            <pre class="whitespace-pre-wrap">{{ hashtags }}</pre>
+
+        </div>
+
+        <!-- PLATFORM SELECTION -->
+
+        <div class="border-t pt-10">
+
+            <h2 class="text-3xl font-bold text-center mb-8">
+                🌍 Select Platforms
+            </h2>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+
+                    {% for platform in available_platforms %}
+
+                    <label class="border rounded-xl p-5 cursor-pointer hover:bg-blue-50 hover:border-blue-600">
+
+                        <input
+                            type="checkbox"
+                            name="platforms"
+                            value="{{ platform|lower }}"
+                            class="mr-2">
+
+                        {{ platform }}
+
+                    </label>
+
+                    {% endfor %}
+
+                </div>
+
+                <div class="text-center mt-10">
+
+                    <button
+                        type="submit"
+                        class="bg-blue-700 hover:bg-blue-800 text-white px-12 py-4 rounded-xl">
+
+                        🚀 Publish
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+       
+
+    </div>
+
+</div>
+
+</body>
+</html>
