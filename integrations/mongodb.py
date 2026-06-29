@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+from datetime import datetime
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import gridfs
@@ -50,3 +50,23 @@ def test_connection():
         print(e)
         print("=" * 60)
         return False
+    
+
+    from datetime import datetime
+
+# ------------------------------
+# USER EXPERIENCE FEEDBACK
+# ------------------------------
+def save_user_feedback(rating, feedback):
+
+    collection = db["user_feedback"]
+
+    document = {
+        "rating": int(rating),
+        "feedback": feedback,
+        "created_at": datetime.utcnow()
+    }
+
+    result = collection.insert_one(document)
+
+    return result.inserted_id

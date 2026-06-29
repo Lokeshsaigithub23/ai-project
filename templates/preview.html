@@ -1,4 +1,4 @@
-{% load static %}
+{% comment %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -118,6 +118,8 @@
 
                     <button
                         type="submit"
+                        name="action"
+                        value="publish"
                         class="bg-blue-700 hover:bg-blue-800 text-white px-12 py-4 rounded-xl">
 
                         🚀 Publish
@@ -129,7 +131,223 @@
             </form>
 
         </div>
+
+        <!-- AI CONTENT FEEDBACK -->
+
+        <div class="border-t pt-10 mb-10">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">
+                    💬 AI Content Feedback
+            </h2>
+            <p class="text-center text-gray-600 mb-6">
+                Share your feedback to improve the generated content before publishing.
+            </p>
+
+            <textarea
+                name="feedback"
+                rows="5"
+                class="w-full border rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Example:
+         • Make it shorter
+         • Use a professional tone
+         • Add more hashtags
+         Target software developers"></textarea>
+
+            <div class="text-center mt-6">
+                <button
+                    type="submit"
+                    name="action"
+                    value="regenerate"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-10 py-3 rounded-xl">
+                    🔄 Regenerate Content
+
+                 </button>
+
+            </div>
+
+        </div>
        
+
+    </div>
+
+</div>
+
+</body>
+</html> {% endcomment %}
+
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Preview</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100">
+
+<div class="max-w-7xl mx-auto p-8">
+
+    <div class="bg-white rounded-3xl shadow-2xl p-10">
+
+        <h1 class="text-5xl font-bold text-center text-blue-700 mb-10">
+            🚀 AI Content Preview
+        </h1>
+
+        {% if image_url %}
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">
+                Uploaded Image
+            </h2>
+
+            <img
+                src="{{ image_url }}"
+                class="rounded-xl shadow-lg border max-w-xl">
+        </div>
+        {% endif %}
+
+        {% if video_url %}
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">
+                Uploaded Video
+            </h2>
+
+            <video controls class="rounded-xl shadow-lg border max-w-xl">
+                <source src="{{ video_url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        {% endif %}
+
+        <!-- ARTICLE -->
+
+        <div class="bg-gray-50 rounded-xl shadow p-6 mb-8">
+
+            <h2 class="text-2xl font-bold text-blue-700 mb-4">
+                📄 Article
+            </h2>
+
+            <pre class="whitespace-pre-wrap">{{ article }}</pre>
+
+        </div>
+
+        <!-- CAPTION -->
+
+        <div class="bg-gray-50 rounded-xl shadow p-6 mb-8">
+
+            <h2 class="text-2xl font-bold text-green-700 mb-4">
+                ✨ Caption
+            </h2>
+
+            <pre class="whitespace-pre-wrap">{{ caption }}</pre>
+
+        </div>
+
+        <!-- HASHTAGS -->
+
+        <div class="bg-gray-50 rounded-xl shadow p-6 mb-10">
+
+            <h2 class="text-2xl font-bold text-purple-700 mb-4">
+                #️⃣ Suggested Hashtags
+            </h2>
+
+            <pre class="whitespace-pre-wrap">{{ hashtags }}</pre>
+
+        </div>
+
+        <!-- FORM START -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <!-- PLATFORM SELECTION -->
+
+            <div class="border-t pt-10">
+
+                <h2 class="text-3xl font-bold text-center mb-8">
+                    🌍 Select Platforms
+                </h2>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+
+                    {% for platform in available_platforms %}
+
+                    <label class="border rounded-xl p-5 cursor-pointer hover:bg-blue-50 hover:border-blue-600">
+
+                        <input
+                            type="checkbox"
+                            name="platforms"
+                            value="{{ platform|lower }}"
+                            class="mr-2">
+
+                        {{ platform }}
+
+                    </label>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <!-- AI CONTENT FEEDBACK -->
+
+            <div class="border-t pt-10 mt-10">
+
+                <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">
+                    💬 AI Content Feedback
+                </h2>
+
+                <p class="text-center text-gray-600 mb-6">
+                    Share your feedback to improve the generated content before publishing.
+                </p>
+
+                <textarea
+                    name="feedback"
+                    rows="5"
+                    class="w-full border rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Example:
+                • Make it shorter
+                • Use a professional tone
+                • Add more hashtags
+                • Target software developers">{{ feedback }}</textarea>
+
+            </div>
+
+            <!-- BUTTONS -->
+
+            <div class="text-center mt-8">
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="regenerate"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-3 rounded-xl mr-4">
+
+                    🔄 Regenerate
+
+                </button>
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="publish"
+                    class="bg-blue-700 hover:bg-blue-800 text-white px-8 py-3 rounded-xl">
+
+                    🚀 Publish
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <!-- FORM END -->
 
     </div>
 

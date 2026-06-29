@@ -4,17 +4,14 @@ from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
 from core.orchestrator import run
 from core.publisher import publish_content
-from django.http import HttpResponse
+from django.http import (HttpResponse,JsonResponse)
 from bson import ObjectId
-from integrations.mongodb import get_gridfs
+from integrations.mongodb import ( get_gridfs,save_user_feedback)
 from integrations.media_storage import (upload_image, upload_video)
 from automation.image_helper import prepare_instagram_image
-from integrations.cloudinary_storage import (
-    upload_image_to_cloudinary,
-    upload_video_to_cloudinary
-)
+from integrations.cloudinary_storage import (upload_image_to_cloudinary,upload_video_to_cloudinary)
 from django.contrib import messages
-
+from feedback.regenerate import regenerate_content
 
 
 def home(request):
@@ -167,10 +164,46 @@ def preview(request):
 
     if request.method == "POST":
 
+        action = request.POST.get("action")
         selected_platforms = request.POST.getlist("platforms")
 
+        # -------------------------------------------------
+        # REGENERATE CONTENT
+        # -------------------------------------------------
+
+        if action == "regenerate":
+
+            feedback = request.POST.get("feedback", "").strip()
+
+            if feedback:
+
+                regenerated = regenerate_content(
+                    topic=request.session.get("topic"),
+                    article=request.session.get("article"),
+                    caption=request.session.get("caption"),
+                    hashtags=request.session.get("hashtags"),
+                    feedback=feedback
+                )
+
+                if regenerated.get("article"):
+                    request.session["article"] = regenerated["article"]
+
+                if regenerated.get("caption"):
+                    request.session["caption"] = regenerated["caption"]
+
+                if regenerated.get("hashtags"):
+                    request.session["hashtags"] = regenerated["hashtags"]
+
+                request.session["feedback"] = ""
+
+            return redirect("preview")
+
+        # -------------------------------------------------
+        # PUBLISH CONTENT
+        # -------------------------------------------------
+
         start = time.time()
-        
+
         response = publish_content(
             article=request.session.get("article"),
             caption=request.session.get("caption"),
@@ -179,7 +212,9 @@ def preview(request):
             video=request.session.get("video_url"),
             selected_platforms=selected_platforms,
         )
+
         end = time.time()
+
         print("=" * 80)
         print(f"PUBLISH TOOK: {end - start:.2f} seconds")
         print("=" * 80)
@@ -191,17 +226,19 @@ def preview(request):
 
             if result["status"] == "success":
 
-                message += f"✅ {platform.title()} published successfully.<br>"
+                message += (
+                    f"✅ {platform.title()} published successfully.<br>"
+                )
 
             else:
 
                 success = False
+
                 message += (
                     f"❌ <b>{platform.title()}</b><br>"
                     f"{result['message']}<br><br>"
                 )
 
-        # Store popup data in session
         request.session["popup_title"] = (
             "Publishing Completed"
             if success
@@ -237,6 +274,11 @@ def preview(request):
 
         "hashtags": request.session.get(
             "hashtags",
+            ""
+        ),
+
+        "feedback": request.session.pop(
+            "feedback",
             ""
         ),
 
@@ -311,3 +353,47 @@ def serve_media(request, file_id):
             str(e),
             status=404
         )
+    
+
+from django.http import JsonResponse
+
+
+def submit_feedback(request):
+
+    if request.method == "POST":
+
+        rating = request.POST.get("rating")
+        feedback = request.POST.get("feedback")
+
+        if not rating or not feedback:
+
+            return JsonResponse({
+                "status": "error",
+                "message": "Please provide both rating and feedback."
+            })
+
+        try:
+
+            save_user_feedback(
+                rating=rating,
+                feedback=feedback
+            )
+
+            return JsonResponse({
+                "status": "success",
+                "message": "Thank you for your feedback!"
+            })
+
+        except Exception as e:
+
+            print(e)
+
+            return JsonResponse({
+                "status": "error",
+                "message": "Unable to save feedback."
+            })
+
+    return JsonResponse({
+        "status": "error",
+        "message": "Invalid request."
+    })

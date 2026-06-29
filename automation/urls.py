@@ -7,4 +7,7 @@ urlpatterns = [
 
     # MongoDB Media
     path("media/<str:file_id>/", views.serve_media, name="serve_media"),
+
+     # User Feedback
+    path("submit-feedback/",views.submit_feedback,name="submit_feedback"),
 ]
