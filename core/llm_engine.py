@@ -17,7 +17,7 @@ client = OpenAI(
 def ask_llm(prompt):
 
     response = client.chat.completions.create(
-        model="gpt-4.1-mini",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "user",
@@ -40,7 +40,7 @@ def ask_llm_image(prompt, image_path):
 
     response = client.chat.completions.create(
 
-        model="gpt-4.1-mini",
+        model="gpt-4o-mini",
 
         messages=[
 
@@ -89,7 +89,7 @@ def ask_llm_image_with_text(topic, prompt, image_path):
 
     response = client.chat.completions.create(
 
-        model="gpt-4.1-mini",
+        model="gpt-4o-mini",
 
         messages=[
 
