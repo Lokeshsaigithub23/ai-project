@@ -186,6 +186,7 @@
     <title>AI Content Preview</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-slate-100">
@@ -337,6 +338,7 @@
                     type="submit"
                     name="action"
                     value="publish"
+                    onclick="return validatePlatforms()"
                     class="bg-blue-700 hover:bg-blue-800 text-white px-8 py-3 rounded-xl">
 
                     🚀 Publish
@@ -352,6 +354,29 @@
     </div>
 
 </div>
+<script>
+function validatePlatforms() {
+
+    const selectedPlatforms = document.querySelectorAll(
+        'input[name="platforms"]:checked'
+    );
+
+    if (selectedPlatforms.length === 0) {
+
+        Swal.fire({
+            icon: "warning",
+            title: "No Platform Selected",
+            text: "Please select at least one social media platform before publishing.",
+            confirmButtonColor: "#2563eb",
+            confirmButtonText: "OK"
+        });
+
+        return false;
+    }
+
+    return true;
+}
+</script>
 
 </body>
 </html>
